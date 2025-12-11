@@ -28,5 +28,7 @@ namespace Asteroido
             Vector2 pos = new(0, -1);
             return Raymath.Vector2Rotate(pos, rad);
         }
+
+
     }
 }

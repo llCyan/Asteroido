@@ -14,10 +14,7 @@ namespace Asteroido
         const int asteroidSpeedMin = 5;
         const int asteroidSpeedMax = 240;
         float asteroidSpeed;
-        const int asteroidRotSpeedmin = 100;
-        const int asteroidRotSpeedmax = 225;
         const float asteroidHP = 10.0f;
-        const int MaxAsteroid = 12;
         public int radius;
         public static Texture2D Texture { get; set; }
         public static Sound Sounds;
@@ -32,10 +29,11 @@ namespace Asteroido
         static Vector2 playerPos;
 
 
+
         public Asteroids(Vector2 pos, float rot, Vector2 PlayerPos) : base(GetRandomPosition(), GetRandomMetRot()) 
         {
             playerPos = PlayerPos;
-
+            
         }
 
 
@@ -43,7 +41,7 @@ namespace Asteroido
         public override void Draw()
         {
 
-                                                  
+                                    
             lado1 = currentFrame * Texture.Width/4;            
             source = new Rectangle(lado1 , lado2, Texture.Width/4, Texture.Height);
             dest = new Rectangle(Position.X, Position.Y, Texture.Width/4, Texture.Height);
@@ -66,6 +64,7 @@ namespace Asteroido
                 if (currentFrame >= 4) currentFrame = 0;
                                                    
             }
+            hitBox = new Rectangle(Position.X, Position.Y, Texture.Width / 4, Texture.Height);
 
         }
 

@@ -11,6 +11,7 @@ namespace Asteroido
         public float Rotation { get; set; }
         public int RotationSpeed { get; set; }
         public bool EstaAtivo  { get; set;} =false;
+        public Rectangle hitBox { get; set; }
 
         public GameObjects(Vector2 posinit, float rot )
         {

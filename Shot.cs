@@ -15,11 +15,11 @@ namespace Asteroido
         const float shotLenght = 15.0f;
         const float ShotSpd = 15.0f;
         double creationTime;
-        double frameTime;
         const float tempoTiro = 10.0f;
         Vector2 positionShoot;
         public static Texture2D Texture;
         public static Sound Sounds;
+
 
         public bool EstarAtivo { get; private set; }
 
@@ -28,7 +28,7 @@ namespace Asteroido
             positionShoot = FacingDirection;
             EstaAtivo = true;
             creationTime = Raylib.GetTime();
-            frameTime = Raylib.GetFrameTime();
+  
 
         }
 
@@ -47,21 +47,27 @@ namespace Asteroido
  
             Rectangle shot = new Rectangle(Position.X, Position.Y, shotWidth, shotLenght);
             Vector2 origin = new (shot.Width / 2, shot.Height / 2);
+
             Raylib.DrawRectanglePro(shot, origin, Rotation, Color.Green);
+
         }
 
         public override void Update()
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.Space))
+            if (EstaAtivo)
             {
                 Raylib.PlaySound(Sounds);
+                EstaAtivo = false;
             }
             ShotUpdate((float)Raylib.GetTime());
+            hitBox = new Rectangle(Position.X, Position.Y, shotWidth, shotLenght);
         }
 
 
         public bool ShotUpdate(float time)
         {
+
+
             if (EstarAtivo)
             {
                 return false;
