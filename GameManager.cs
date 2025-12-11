@@ -21,14 +21,15 @@ namespace Asteroido
         const float shotCooldown = 0.70f;
         bool canShoot = true;
         float lastShotTime = 0.0f;
-        int numberpos;
+        int meteorSize = -1;
+        bool MeteorState = false;
 
         public GameManager()
         {
             posInicial = new Vector2(RaylibRun.ScreenWidth / 2, RaylibRun.ScreenHeight / 2);
             PlayableCharacter = new Player(posInicial, 0);
             Camera = new Camera2D();
-
+            
 
         }
 
@@ -88,6 +89,7 @@ namespace Asteroido
                     {
 
                         Objetos.RemoveAt(i);
+                        
                     }
                 }
             }
@@ -95,16 +97,22 @@ namespace Asteroido
 
         }
 
-        public void Meteorite()
+        public void Meteorite(int meteorSize)
         {
+        
+               Vector2 spawnPosition = Asteroids.GetRandomPosition();
+            
+            Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, meteorSize, MeteorState, spawnPosition) ;
+            
 
+                Objetos.Add(novoMeteorito);
 
-            Asteroids novoMeteorito = new Asteroids(Asteroids.GetRandomPosition(), Asteroids.GetRandomMetRot(), PlayableCharacter.Position);
-
-
-            Objetos.Add(novoMeteorito);
         }
 
+        public void MeteorDestroyed(Vector2 lastPos, int localMeteorSize)
+        {
+
+        }
         public void MeteoriteControl()
         {
             SpawnTimer += Raylib.GetFrameTime();
@@ -129,7 +137,7 @@ namespace Asteroido
             {
                 if (Objetos.OfType<Asteroids>().Count() < MaxAsteroid)
                 {
-                    Meteorite();
+                    Meteorite(meteorSize);
                     SpawnTimer = 0.0f;
                 }
                 else
@@ -144,7 +152,7 @@ namespace Asteroido
         public void ColisionCheck()
         {
 
-
+            var toRemove = new HashSet<GameObjects>();
 
             for (int i = Objetos.Count - 1; i >= 0; i--)
             {
@@ -157,8 +165,39 @@ namespace Asteroido
                     bool colision = Raylib.CheckCollisionRecs(tiro.hitBox, Meteor.hitBox);
                     if (colision)
                     {
-                        Objetos.RemoveAt(j);
-                        //Objetos.RemoveAt(i);
+
+                        toRemove.Add(tiro);
+                        toRemove.Add(Meteor);
+
+                        
+                        if (Meteor.MeteorSizePicked == 2)
+                        {
+                            meteorSize = 1;
+                            MeteorState = true;
+                            for(int k = 0; k < 2; k++)
+                            {
+                                
+                                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, meteorSize, MeteorState, Meteor.Position);
+                                Objetos.Add(novoMeteorito);
+                            }
+                            MeteorState = false;
+
+
+                        }
+                        else if (Meteor.MeteorSizePicked == 1)
+                        {
+                            meteorSize = 0;
+                            MeteorState = true;
+                            for (int k = 0; k < 2; k++)
+                            {
+
+                                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, meteorSize, MeteorState, Meteor.Position);
+                                Objetos.Add(novoMeteorito);
+                            }
+                            MeteorState = false;
+                        }
+
+                        meteorSize = -1;
                         break;
                     }
 
@@ -166,6 +205,7 @@ namespace Asteroido
 
                 
             }
+            Objetos.RemoveAll(o => toRemove.Contains(o));
 
         }
 
