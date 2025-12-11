@@ -1,11 +1,5 @@
 ﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asteroido
 {
@@ -16,9 +10,9 @@ namespace Asteroido
             return rotation * ((float)Math.PI / 180.0f);
         }
 
-        public static Raylib_cs.Rectangle GetScreenArea()        
+        public static Raylib_cs.Rectangle GetScreenArea()
         {
-            Raylib_cs.Rectangle area = new (0,0, Raylib.GetRenderWidth(), Raylib.GetRenderHeight());
+            Raylib_cs.Rectangle area = new(0, 0, Raylib.GetRenderWidth(), Raylib.GetRenderHeight());
             return area;
         }
 

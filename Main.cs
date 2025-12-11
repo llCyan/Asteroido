@@ -4,9 +4,6 @@ using Asteroido;
 
 namespace Asteroid;
 
-using Raylib_cs;
-
-
 internal static class Program
 {
 

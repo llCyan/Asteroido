@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Raylib_cs;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Raylib_cs;
 
 namespace Asteroido
 {
@@ -28,12 +23,12 @@ namespace Asteroido
             positionShoot = FacingDirection;
             EstaAtivo = true;
             creationTime = Raylib.GetTime();
-  
+
 
         }
 
-       
-        public static void GetResources() 
+
+        public static void GetResources()
         {
             Sounds = Raylib.LoadSound(@"resource\laser-45816.mp3");
         }
@@ -42,11 +37,11 @@ namespace Asteroido
             Raylib.UnloadSound(Sounds);
         }
 
-        public override void Draw() 
+        public override void Draw()
         {
- 
+
             Rectangle shot = new Rectangle(Position.X, Position.Y, shotWidth, shotLenght);
-            Vector2 origin = new (shot.Width / 2, shot.Height / 2);
+            Vector2 origin = new(shot.Width / 2, shot.Height / 2);
 
             Raylib.DrawRectanglePro(shot, origin, Rotation, Color.Green);
 
@@ -73,14 +68,14 @@ namespace Asteroido
                 return false;
             }
 
-            Position += positionShoot*ShotSpd;
-            if(time > creationTime +tempoTiro || Raylib.CheckCollisionPointRec(Position, SimpleMaths.GetScreenArea()))
+            Position += positionShoot * ShotSpd;
+            if (time > creationTime + tempoTiro || Raylib.CheckCollisionPointRec(Position, SimpleMaths.GetScreenArea()))
             {
                 return false;
             }
 
             return true;
         }
-            
+
     }
 }

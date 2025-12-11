@@ -1,10 +1,5 @@
 ﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asteroido
 {
@@ -12,7 +7,7 @@ namespace Asteroido
     {
 
         Vector2 speedmvn;
-        int rotationSpeed  = 360;
+        int rotationSpeed = 360;
         const float radius = 32;
         const int PLAYER_SPEED = 250;
         const int PLAYER_ACCELERATION = 750;
@@ -25,11 +20,11 @@ namespace Asteroido
         float lado1 = 0.0f, lado2 = 0.0f;
 
 
-        public Player(Vector2 Pos, float rot) : base(Pos, rot )
+        public Player(Vector2 Pos, float rot) : base(Pos, rot)
         {
 
 
-            
+
 
         }
 
@@ -80,7 +75,7 @@ namespace Asteroido
                 Raylib.SetSoundVolume(SomMovimento, 0.3f);
                 if (Raylib.IsKeyPressed(KeyboardKey.W))
                 {
-                    Raylib.PlaySound(SomMovimento);        
+                    Raylib.PlaySound(SomMovimento);
                     Raylib.SetSoundVolume(SomMovimento, 0.8f);
 
                 }
@@ -141,7 +136,7 @@ namespace Asteroido
         public Vector2 GetFacingDirection()
         {
             float rad = SimpleMaths.GetRad(Rotation);
-            Vector2 pos = new (0, -1);
+            Vector2 pos = new(0, -1);
             return Raymath.Vector2Rotate(pos, rad);
         }
 

@@ -1,11 +1,4 @@
 ﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asteroido
 {
@@ -18,13 +11,13 @@ namespace Asteroido
         public void Execute()
         {
 
-            
+
             Raylib.InitWindow(ScreenWidth, ScreenHeight, "Asteroido X");
             Raylib.InitAudioDevice();
             Raylib.SetTargetFPS(60);
             GameManager game = new GameManager();
             game.Inicializar();
-            background = Raylib.LoadTexture(@"resource\background.png"); 
+            background = Raylib.LoadTexture(@"resource\background.png");
             game.LoadsResources();
 
 
@@ -35,7 +28,7 @@ namespace Asteroido
                 Raylib.ClearBackground(Color.Black);
                 Raylib.DrawTexture(background, 0, 0, Color.RayWhite);
                 Raylib.BeginDrawing();
-                Raylib.DrawFPS(10,10);
+                Raylib.DrawFPS(10, 10);
 
                 game.DrawGame();
 

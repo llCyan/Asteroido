@@ -1,16 +1,10 @@
 ﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asteroido
 {
 
-    
+
     public class GameManager
     {
         Vector2 posInicial;
@@ -32,19 +26,19 @@ namespace Asteroido
         public GameManager()
         {
             posInicial = new Vector2(RaylibRun.ScreenWidth / 2, RaylibRun.ScreenHeight / 2);
-            PlayableCharacter = new Player(posInicial, 0 );
+            PlayableCharacter = new Player(posInicial, 0);
             Camera = new Camera2D();
-            
+
 
         }
 
-        public void Inicializar() 
+        public void Inicializar()
         {
 
             Objetos.Add(PlayableCharacter);
             CameraStuff();
         }
-      
+
         public void LoadsResources()
         {
             Player.GetResources();
@@ -68,36 +62,36 @@ namespace Asteroido
 
             Shot novoTiro = new Shot(PlayableCharacter.GetPlayerPosition(), PlayableCharacter.Rotation, PlayableCharacter.GetFacingDirection());
 
-            
+
             Objetos.Add(novoTiro);
         }
         public void ControlarTiros()
         {
-  
+
             if (Raylib.IsKeyPressed(KeyboardKey.Space) && canShoot)
             {
                 Atirar();
                 canShoot = false;
                 lastShotTime += Raylib.GetFrameTime();
 
-               
-            }
-             
 
-            for(int i = Objetos.Count -1; i>=0; i--)
+            }
+
+
+            for (int i = Objetos.Count - 1; i >= 0; i--)
             {
                 GameObjects obj = Objetos[i];
-                if(obj is Shot)
+                if (obj is Shot)
                 {
                     distance = Vector2.Distance(PlayableCharacter.Position, obj.Position);
-                    if (distance >= 300 )
+                    if (distance >= 300)
                     {
 
                         Objetos.RemoveAt(i);
-                    }                                   
+                    }
                 }
             }
-   
+
 
         }
 
@@ -114,17 +108,17 @@ namespace Asteroido
         public void MeteoriteControl()
         {
             SpawnTimer += Raylib.GetFrameTime();
-            cullingRadius = PlayableCharacter.Position.X + 500.0f ; 
+            cullingRadius = PlayableCharacter.Position.X + 500.0f;
             cullingRadiusSqred = cullingRadius * cullingRadius;
 
-            for(int i = Objetos.Count -1; i>=0; i--)
+            for (int i = Objetos.Count - 1; i >= 0; i--)
             {
                 GameObjects obj = Objetos[i];
 
-                if(obj is Asteroids)
+                if (obj is Asteroids)
                 {
                     float distanceSqred = Vector2.DistanceSquared(PlayableCharacter.Position, obj.Position);
-                    if(distanceSqred > cullingRadiusSqred)
+                    if (distanceSqred > cullingRadiusSqred)
                     {
                         Objetos.RemoveAt(i);
                     }
@@ -144,7 +138,7 @@ namespace Asteroido
                 }
             }
 
-            
+
         }
 
         public void ColisionCheck()
@@ -188,7 +182,7 @@ namespace Asteroido
 
             lastShotTime += Raylib.GetFrameTime();
             if (!canShoot)
-            {            
+            {
 
                 if (lastShotTime >= shotCooldown)
                 {
@@ -229,5 +223,5 @@ namespace Asteroido
             Camera.Offset = new Vector2(RaylibRun.ScreenWidth / 2, RaylibRun.ScreenHeight / 2);
             Camera.Target = PlayableCharacter.Position;
         }
-        }
+    }
 }

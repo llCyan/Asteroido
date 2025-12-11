@@ -1,11 +1,5 @@
 ﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asteroido
 {
@@ -23,36 +17,36 @@ namespace Asteroido
         int framesSpeed = 3;
         float lado1 = 0.0f, lado2 = 0.0f;
         Rectangle source;
-        Rectangle dest; 
-        Vector2 origin ;
+        Rectangle dest;
+        Vector2 origin;
         Color color = Color.White;
         static Vector2 playerPos;
 
 
 
-        public Asteroids(Vector2 pos, float rot, Vector2 PlayerPos) : base(GetRandomPosition(), GetRandomMetRot()) 
+        public Asteroids(Vector2 pos, float rot, Vector2 PlayerPos) : base(GetRandomPosition(), GetRandomMetRot())
         {
             playerPos = PlayerPos;
-            
+
         }
 
 
-   
+
         public override void Draw()
         {
 
-                                    
-            lado1 = currentFrame * Texture.Width/4;            
-            source = new Rectangle(lado1 , lado2, Texture.Width/4, Texture.Height);
-            dest = new Rectangle(Position.X, Position.Y, Texture.Width/4, Texture.Height);
+
+            lado1 = currentFrame * Texture.Width / 4;
+            source = new Rectangle(lado1, lado2, Texture.Width / 4, Texture.Height);
+            dest = new Rectangle(Position.X, Position.Y, Texture.Width / 4, Texture.Height);
             origin = new Vector2(dest.Width / 2, dest.Height / 2);
             Raylib.DrawTexturePro(Texture, source, dest, origin, Rotation, color);
-                      
+
         }
 
         public override void Update()
         {
-            Vector2 asteroidSpeed = new (Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
+            Vector2 asteroidSpeed = new(Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
             Position += asteroidSpeed * SimpleMaths.GetFacingDirection(Rotation) * Raylib.GetFrameTime();
 
 
@@ -62,7 +56,7 @@ namespace Asteroido
                 frameCounter = 0;
                 currentFrame++;
                 if (currentFrame >= 4) currentFrame = 0;
-                                                   
+
             }
             hitBox = new Rectangle(Position.X, Position.Y, Texture.Width / 4, Texture.Height);
 
@@ -94,13 +88,13 @@ namespace Asteroido
         public static Vector2 GetRandomPosition()
         {
             int outOfScreen = 300;
-            int ScreenX = (int) playerPos.X;
-            int ScreenY = (int) playerPos.Y;
+            int ScreenX = (int)playerPos.X;
+            int ScreenY = (int)playerPos.Y;
             int SideDecider = Raylib.GetRandomValue(0, 3);
 
-            Vector2 SpawnPos = playerPos; 
+            Vector2 SpawnPos = playerPos;
 
-            if(SideDecider == 0) // Top
+            if (SideDecider == 0) // Top
             {
                 SpawnPos = new Vector2(Raylib.GetRandomValue(ScreenX - outOfScreen, ScreenX) + outOfScreen, ScreenY - outOfScreen);
             }
@@ -135,7 +129,7 @@ namespace Asteroido
         {
             Random rnd = new Random();
             int maxNumber = Enum.GetValues(typeof(AsteSize)).Length;
-            int randomNumber = rnd.Next(0, maxNumber-1);
+            int randomNumber = rnd.Next(0, maxNumber - 1);
             return 16.0f * randomNumber;
         }
     }
