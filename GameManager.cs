@@ -143,7 +143,7 @@ namespace Asteroido
 
         public void ColisionCheck()
         {
-            bool tiroMeteorColision = false;
+
 
 
             for (int i = Objetos.Count - 1; i >= 0; i--)
@@ -158,21 +158,15 @@ namespace Asteroido
                     if (colision)
                     {
                         Objetos.RemoveAt(j);
-                        tiroMeteorColision = true;
-                        numberpos = i;
+                        //Objetos.RemoveAt(i);
                         break;
                     }
 
                 }
-                break;
+
+                
             }
 
-            if (tiroMeteorColision)
-            {
-                Objetos.RemoveAt(numberpos);
-                tiroMeteorColision = false;
-
-            }
         }
 
         public void UpdateGame()
