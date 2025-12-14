@@ -6,7 +6,7 @@ namespace Asteroido
     public class Player : GameObjects
     {
 
-        Vector2 speedmvn;
+       
         int rotationSpeed = 360;
         const float radius = 32;
         const int PLAYER_SPEED = 250;
@@ -14,21 +14,65 @@ namespace Asteroido
         const int PLAYER_DECELERATION = 175;
         static Texture2D Texture;
         public static Sound Sounds;
-
+        public static Sound Explosion;
         Vector2 origin;
         Color color = Color.White;
         float lado1 = 0.0f, lado2 = 0.0f;
+        public int playerHitPoint = 2;
+        public float Iframes = 3.0f;
+        public bool isInvincible = false;
+        float blinkTimer = 0.0f;
+        float invulnerabilityTimer = 0.0f;
+        public bool PlayerDmgTaken = false;
 
 
         public Player(Vector2 Pos, float rot) : base(Pos, rot)
         {
+            speedmvn = new Vector2(0, 0);
 
 
-            
 
         }
 
+        public void PlayerTakeDamage()
+        {
+                
+            if (!isInvincible)
+            {
+                playerHitPoint--;
+                
+                isInvincible = true;
 
+            }
+
+       
+                
+            
+        }
+
+        public void BlinkEffect()
+        {
+            if (isInvincible)
+            {
+                blinkTimer += Raylib.GetFrameTime();
+                invulnerabilityTimer -= Raylib.GetFrameTime();
+
+                if(blinkTimer <= Iframes) 
+                    color = Color.Red;
+
+                if (blinkTimer >= Iframes)
+                {
+                    color = Color.White;
+                    isInvincible = false;
+                }
+
+            }
+        }
+
+        public void PlayExplosionSound()
+        {
+            Raylib.PlaySound(Explosion);
+        }
         public override void Draw()
         {
 
@@ -42,6 +86,7 @@ namespace Asteroido
         {
             Texture = Raylib.LoadTexture(@"resource\ship32.png");
             Sounds = Raylib.LoadSound(@"resource\low-spaceship-rumble-195722.mp3");
+            Explosion = Raylib.LoadSound(@"resource\HitSound.mp3");
         }
         public static void UnloadResources()
         {
@@ -51,8 +96,11 @@ namespace Asteroido
 
         public override void Update()
         {
-            PlayerMove(Sounds);
+            
 
+            BlinkEffect();
+            PlayerMove(Sounds);
+            hitBox = new Rectangle(Position.X, Position.Y, Texture.Width, Texture.Height);
         }
 
         public void UpdateSpeed(float frame, Sound SomMovimento)
@@ -62,6 +110,7 @@ namespace Asteroido
             float mag = (float)Math.Sqrt(magSqr);
             Vector2 FacingDirection;
             bool playSound = false;
+            
 
 
             FacingDirection = GetFacingDirection();
@@ -91,20 +140,18 @@ namespace Asteroido
             {
                 if (mag > 0)
                 {
-                    float xSign = (speedmvn.X < 0) ? -1.0f : 1.0f;
-                    float ySign = (speedmvn.Y < 0) ? -1.0f : 1.0f;
+                    Vector2 direction = Raymath.Vector2Normalize(speedmvn);
+                    float decelMagnitude = PLAYER_DECELERATION * frame;
+                    Vector2 decel = Raymath.Vector2Scale(direction, -decelMagnitude);
+                    if (Raymath.Vector2Length(decel) > mag)
+                    {
+                        speedmvn = new Vector2(0, 0);
+                    }
+                    else
+                    {
+                        speedmvn = Raymath.Vector2Add(speedmvn, decel);
+                    }
 
-                    float xAbs = speedmvn.X * xSign;
-                    float yAbs = speedmvn.Y * ySign;
-
-                    float xWeight = xAbs * xAbs / magSqr;
-                    float yWeight = yAbs * yAbs / magSqr;
-
-                    float xDecel = xWeight * PLAYER_DECELERATION * xSign * Raylib.GetFrameTime();
-                    float yDecel = yWeight * PLAYER_DECELERATION * ySign * Raylib.GetFrameTime();
-
-                    speedmvn.X = (xAbs > xDecel) ? speedmvn.X - xDecel : 0;
-                    speedmvn.Y = (yAbs > yDecel) ? speedmvn.Y - yDecel : 0;
                 }
             }
 

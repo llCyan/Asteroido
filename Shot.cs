@@ -8,7 +8,7 @@ namespace Asteroido
 
         const float shotWidth = 25.0f;
         const float shotLenght = 25.0f;
-        const float ShotSpd = 8.0f;
+        const float ShotSpd = 12.0f;
         Vector2 positionShoot;
         public static Texture2D Texture;
         public static Sound Sounds;

@@ -23,12 +23,12 @@ namespace Asteroido
 
             while (!Raylib.WindowShouldClose())
             {
-                game.UpdateGame();
+                Raylib.BeginDrawing();
 
                 Raylib.ClearBackground(Color.Black);
                 Raylib.DrawTexture(background, 0, 0, Color.RayWhite);
-                Raylib.BeginDrawing();
                 Raylib.DrawFPS(10, 10);
+                game.UpdateGame();
 
                 game.DrawGame();
 

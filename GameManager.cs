@@ -11,6 +11,8 @@ namespace Asteroido
 
         public List<GameObjects> Objetos { get; set; } = new List<GameObjects>();
         public Player PlayableCharacter { get; set; }
+        public MainMenu MainMenuScreen;
+        DrawScore Score;
         public Camera2D Camera;
         const int MaxAsteroid = 12;
         const float TimeUntilNextSpawn = 2.0f;
@@ -23,19 +25,30 @@ namespace Asteroido
         float lastShotTime = 0.0f;
         int meteorSize = -1;
         bool MeteorState = false;
+        GameState gameState;
 
         public GameManager()
         {
             posInicial = new Vector2(RaylibRun.ScreenWidth / 2, RaylibRun.ScreenHeight / 2);
             PlayableCharacter = new Player(posInicial, 0);
             Camera = new Camera2D();
-            
-
+            MainMenuScreen = new MainMenu();
+            Score = new DrawScore();
         }
 
         public void Inicializar()
         {
+            
+            ResetGame();
+            CameraStuff();
+            
+            
+        }
 
+        public void ResetGame()
+        {
+            Objetos.Clear();
+            PlayableCharacter = new Player(posInicial, 0);
             Objetos.Add(PlayableCharacter);
             CameraStuff();
         }
@@ -45,7 +58,7 @@ namespace Asteroido
             Player.GetResources();
             Shot.GetResources();
             Asteroids.GetResources();
-
+            MainMenuScreen.LoadResources();
         }
         public void UnloadsResources()
         {
@@ -53,6 +66,7 @@ namespace Asteroido
             Shot.UnloadResources();
             Asteroids.UnloadResources();
             Raylib.EndMode2D();
+            MainMenuScreen.UnloadResources();
         }
 
 
@@ -100,19 +114,16 @@ namespace Asteroido
         public void Meteorite(int meteorSize)
         {
         
-               Vector2 spawnPosition = Asteroids.GetRandomPosition();
+                Vector2 spawnPosition = Asteroids.GetRandomPosition();
             
-            Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, meteorSize, MeteorState, spawnPosition) ;
+                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, Asteroids.MeteorSize.Random, MeteorState, spawnPosition) ;
             
 
                 Objetos.Add(novoMeteorito);
 
         }
 
-        public void MeteorDestroyed(Vector2 lastPos, int localMeteorSize)
-        {
 
-        }
         public void MeteoriteControl()
         {
             SpawnTimer += Raylib.GetFrameTime();
@@ -170,34 +181,37 @@ namespace Asteroido
                         toRemove.Add(Meteor);
 
                         
-                        if (Meteor.MeteorSizePicked == 2)
-                        {
-                            meteorSize = 1;
+                        if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Large )
+                        {                           
                             MeteorState = true;
                             for(int k = 0; k < 2; k++)
                             {
                                 
-                                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, meteorSize, MeteorState, Meteor.Position);
+                                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, Asteroids.MeteorSize.Medium, MeteorState, Meteor.Position);
                                 Objetos.Add(novoMeteorito);
                             }
                             MeteorState = false;
-
+                            Score.MathScore(DrawScore.ScoreLevels.High);
 
                         }
-                        else if (Meteor.MeteorSizePicked == 1)
+                        else if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Medium)
                         {
-                            meteorSize = 0;
+                            
                             MeteorState = true;
                             for (int k = 0; k < 2; k++)
                             {
 
-                                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, meteorSize, MeteorState, Meteor.Position);
+                                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, Asteroids.MeteorSize.Small, MeteorState, Meteor.Position);
                                 Objetos.Add(novoMeteorito);
                             }
                             MeteorState = false;
+                            Score.MathScore(DrawScore.ScoreLevels.Medium);
+                        }else if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Small)
+                        {
+                            Score.MathScore(DrawScore.ScoreLevels.Low);
                         }
 
-                        meteorSize = -1;
+                        
                         break;
                     }
 
@@ -209,43 +223,103 @@ namespace Asteroido
 
         }
 
+        public void PlayerColision()
+        {
+            var toRemove = new HashSet<GameObjects>();
+            for (int i = Objetos.Count - 1; i >= 0; i--)
+            {
+                GameObjects obj = Objetos[i];
+                if (obj is not Asteroids) continue;
+                else
+                {
+                    IsMeteorPlayerColiding(PlayableCharacter, obj.hitBox);
+                    bool colision = Raylib.CheckCollisionRecs(PlayableCharacter.hitBox, obj.hitBox);
+                    if (colision)
+                    {
+                        PlayableCharacter.PlayerTakeDamage();
+
+
+                        if(PlayableCharacter.playerHitPoint == 0)
+                        {
+                            gameState = GameState.GameOver;
+                            toRemove.Add(PlayableCharacter);
+                            PlayableCharacter.PlayExplosionSound();
+                        }
+                    }
+                }
+            }
+
+            Objetos.RemoveAll(o => toRemove.Contains(o));
+        }
+
+        public void IsMeteorPlayerColiding(Player Player, Rectangle meteor)
+        {
+            if(Player.Position.X < meteor.Position.X + meteor.Width &&
+               Player.Position.X + Player.hitBox.Width > meteor.Position.X &&
+               Player.Position.Y < meteor.Position.Y + meteor.Height &&
+               Player.Position.Y + Player.hitBox.Height > meteor.Position.Y)
+            {
+                Player.speedmvn *= -1;
+            }
+        }
         public void UpdateGame()
         {
-            Camera.Target = PlayableCharacter.Position;
+            if(gameState == GameState.MainMenu)
+            gameState = MainMenuScreen.Show();
 
-
-            lastShotTime += Raylib.GetFrameTime();
-            if (!canShoot)
+            if(gameState == GameState.GameOver)
             {
-
-                if (lastShotTime >= shotCooldown)
+                MainMenuScreen.GameOver();
+                if (Raylib.IsKeyPressed(KeyboardKey.Enter))
                 {
-                    canShoot = true;
-                    lastShotTime = 0.0f;
+                    ResetGame();
+                    gameState = GameState.Playing;
                 }
             }
 
 
-            MeteoriteControl();
-            ControlarTiros();
-            ColisionCheck();
-
-
-
-            foreach (GameObjects obj in Objetos)
+            if (gameState == GameState.Playing)
             {
-                obj.Update();
+                Camera.Target = PlayableCharacter.Position;
+
+
+
+                lastShotTime += Raylib.GetFrameTime();
+                if (!canShoot)
+                {
+
+                    if (lastShotTime >= shotCooldown)
+                    {
+                        canShoot = true;
+                        lastShotTime = 0.0f;
+                    }
+                }
+
+
+                MeteoriteControl();
+                ControlarTiros();
+                ColisionCheck();
+                PlayerColision();
+
+
+
+                foreach (GameObjects obj in Objetos)
+                {
+                    obj.Update();
+                }
             }
         }
 
         public void DrawGame()
         {
-
-            Raylib.DrawText("Asteroido X:" + PlayableCharacter.Position.X + " Y :" + PlayableCharacter.Position.Y, 10, 10, 20, Color.White);
-            Raylib.BeginMode2D(Camera);
-            foreach (GameObjects obj in Objetos)
+            if (gameState == GameState.Playing)
             {
-                obj.Draw();
+                Score.Draw();
+                Raylib.BeginMode2D(Camera);
+                foreach (GameObjects obj in Objetos)
+                {
+                    obj.Draw();
+                }
             }
         }
 
@@ -256,6 +330,13 @@ namespace Asteroido
             Camera.Zoom = 1.5f;
             Camera.Offset = new Vector2(RaylibRun.ScreenWidth / 2, RaylibRun.ScreenHeight / 2);
             Camera.Target = PlayableCharacter.Position;
+        }
+
+        public enum GameState
+        {
+            MainMenu,
+            Playing,
+            GameOver
         }
     }
 }

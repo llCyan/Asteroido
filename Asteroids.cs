@@ -12,6 +12,7 @@ namespace Asteroido
         public static Texture2D asteroidSmall;
         public static Texture2D asteroidMedium;
         Texture2D Texture;
+        public static Sound meteorHit;
         public static Sound Sounds;
         int currentFrame = 0;
         int frameCounter = 0;
@@ -23,29 +24,29 @@ namespace Asteroido
         Color color = Color.White;
         static Vector2 playerPos;
         Random rmd = new Random();
-        
+        bool playerSound;
 
 
 
-        public Asteroids(Vector2 PlayerPos, int forcesize, bool Destroyed, Vector2 lastPos) : base(GetRandomPosition(), GetRandomMetRot())
+        public Asteroids(Vector2 PlayerPos, MeteorSize picked, bool Destroyed, Vector2 lastPos) : base(GetRandomPosition(), GetRandomMetRot())
         {
             playerPos = PlayerPos;
-            if(forcesize == 1)
+            if(picked == MeteorSize.Small)
             {
-                MeteorSizePicked = 1;
+                NewMeteorSize = MeteorSize.Small;
+            }if(picked == MeteorSize.Medium)
+            {
+                NewMeteorSize = MeteorSize.Medium;
             }
-            else if(forcesize == 0)
+            else if(picked == MeteorSize.Random)
             {
-                MeteorSizePicked = 0;
-            }
-            else
-            {
-                MeteorSizePicked = rmd.Next(0, Enum.GetValues(typeof(MeteorSize)).Length);
+                NewMeteorSize = RandomSize();
             }
 
             if (Destroyed)
             {
                 Position = Raymath.Vector2AddValue( lastPos, 20);
+                playerSound = Destroyed;
             }
         }
 
@@ -55,14 +56,19 @@ namespace Asteroido
         {
 
             CallMeteorite();
+            if (playerSound)
+            {
+                Raylib.PlaySound(meteorHit);
+            }
 
         }
 
         public override void Update()
         {
-            Vector2 asteroidSpeed = new(Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
-            Position += asteroidSpeed * SimpleMaths.GetFacingDirection(Rotation) * Raylib.GetFrameTime();
+            speedmvn = new(Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
+            Position += speedmvn * SimpleMaths.GetFacingDirection(Rotation) * Raylib.GetFrameTime();
 
+            
 
             frameCounter++;
             if (frameCounter >= (60 / framesSpeed))
@@ -81,15 +87,15 @@ namespace Asteroido
         {
             
 
-            if (MeteorSizePicked==2)
+            if (NewMeteorSize == MeteorSize.Large)
             {
                 Texture = asteroidLarge;
             }
-            else if (MeteorSizePicked == 1)
+            else if (NewMeteorSize == MeteorSize.Medium)
             {
                 Texture = asteroidMedium;
             }
-            else if (MeteorSizePicked == 0)
+            else if (NewMeteorSize == MeteorSize.Small)
             {
                 Texture = asteroidSmall;
             }
@@ -100,12 +106,20 @@ namespace Asteroido
             origin = new Vector2(dest.Width / 2, dest.Height / 2);
             Raylib.DrawTexturePro(Texture, source, dest, origin, Rotation, color);
         }
-        enum MeteorSize
+        public enum MeteorSize
         {
             Small,
             Medium,
             Large,
+            Random
 
+        }
+        public MeteorSize RandomSize()
+        {
+            Random rnd = new Random();
+            int maxNumber = Enum.GetValues(typeof(MeteorSize)).Length -1;
+            int randomNumber = rnd.Next(0, maxNumber);
+            return (MeteorSize)randomNumber;
         }
 
         public static void GetResources()
@@ -114,7 +128,8 @@ namespace Asteroido
             asteroidLarge = Raylib.LoadTexture(@"resource\roids_large.png");
             asteroidMedium = Raylib.LoadTexture(@"resource\roids_medium.png");
             asteroidSmall = Raylib.LoadTexture(@"resource\roids_small.png");
-
+            meteorHit = Raylib.LoadSound(@"resource\HitSound.mp3");
+            
         }
 
 
