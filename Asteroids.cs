@@ -23,7 +23,6 @@ namespace Asteroido
         Vector2 origin;
         Color color = Color.White;
         static Vector2 playerPos;
-        Random rmd = new Random();
         bool playerSound;
 
 
@@ -31,21 +30,22 @@ namespace Asteroido
         public Asteroids(Vector2 PlayerPos, MeteorSize picked, bool Destroyed, Vector2 lastPos) : base(GetRandomPosition(), GetRandomMetRot())
         {
             playerPos = PlayerPos;
-            if(picked == MeteorSize.Small)
+            if (picked == MeteorSize.Small)
             {
                 NewMeteorSize = MeteorSize.Small;
-            }if(picked == MeteorSize.Medium)
+            }
+            if (picked == MeteorSize.Medium)
             {
                 NewMeteorSize = MeteorSize.Medium;
             }
-            else if(picked == MeteorSize.Random)
+            else if (picked == MeteorSize.Random)
             {
                 NewMeteorSize = RandomSize();
             }
 
             if (Destroyed)
             {
-                Position = Raymath.Vector2AddValue( lastPos, 20);
+                Position = Raymath.Vector2AddValue(lastPos, 20);
                 playerSound = Destroyed;
             }
         }
@@ -68,7 +68,7 @@ namespace Asteroido
             speedmvn = new(Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
             Position += speedmvn * SimpleMaths.GetFacingDirection(Rotation) * Raylib.GetFrameTime();
 
-            
+
 
             frameCounter++;
             if (frameCounter >= (60 / framesSpeed))
@@ -85,7 +85,7 @@ namespace Asteroido
 
         public void CallMeteorite()
         {
-            
+
 
             if (NewMeteorSize == MeteorSize.Large)
             {
@@ -117,7 +117,7 @@ namespace Asteroido
         public MeteorSize RandomSize()
         {
             Random rnd = new Random();
-            int maxNumber = Enum.GetValues(typeof(MeteorSize)).Length -1;
+            int maxNumber = Enum.GetValues(typeof(MeteorSize)).Length - 1;
             int randomNumber = rnd.Next(0, maxNumber);
             return (MeteorSize)randomNumber;
         }
@@ -129,7 +129,7 @@ namespace Asteroido
             asteroidMedium = Raylib.LoadTexture(@"resource\roids_medium.png");
             asteroidSmall = Raylib.LoadTexture(@"resource\roids_small.png");
             meteorHit = Raylib.LoadSound(@"resource\HitSound.mp3");
-            
+
         }
 
 

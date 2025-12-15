@@ -42,7 +42,7 @@ namespace Asteroido
             Rectangle shot = new Rectangle(Position.X, Position.Y, shotWidth, shotLenght);
             Vector2 origin = new(shot.Width / 2, shot.Height / 2);
 
-            Raylib.DrawTexturePro(Texture,source, shot, origin, Rotation, Color.RayWhite);
+            Raylib.DrawTexturePro(Texture, source, shot, origin, Rotation, Color.RayWhite);
 
         }
 
@@ -62,7 +62,7 @@ namespace Asteroido
         {
 
             Position += positionShoot * ShotSpd;
-    
+
         }
 
     }

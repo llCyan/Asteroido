@@ -38,11 +38,11 @@ namespace Asteroido
 
         public void Inicializar()
         {
-            
+
             ResetGame();
             CameraStuff();
-            
-            
+
+
         }
 
         public void ResetGame()
@@ -103,7 +103,7 @@ namespace Asteroido
                     {
 
                         Objetos.RemoveAt(i);
-                        
+
                     }
                 }
             }
@@ -113,13 +113,13 @@ namespace Asteroido
 
         public void Meteorite(int meteorSize)
         {
-        
-                Vector2 spawnPosition = Asteroids.GetRandomPosition();
-            
-                Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, Asteroids.MeteorSize.Random, MeteorState, spawnPosition) ;
-            
 
-                Objetos.Add(novoMeteorito);
+            Vector2 spawnPosition = Asteroids.GetRandomPosition();
+
+            Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, Asteroids.MeteorSize.Random, MeteorState, spawnPosition);
+
+
+            Objetos.Add(novoMeteorito);
 
         }
 
@@ -180,13 +180,13 @@ namespace Asteroido
                         toRemove.Add(tiro);
                         toRemove.Add(Meteor);
 
-                        
-                        if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Large )
-                        {                           
+
+                        if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Large)
+                        {
                             MeteorState = true;
-                            for(int k = 0; k < 2; k++)
+                            for (int k = 0; k < 2; k++)
                             {
-                                
+
                                 Asteroids novoMeteorito = new Asteroids(PlayableCharacter.Position, Asteroids.MeteorSize.Medium, MeteorState, Meteor.Position);
                                 Objetos.Add(novoMeteorito);
                             }
@@ -196,7 +196,7 @@ namespace Asteroido
                         }
                         else if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Medium)
                         {
-                            
+
                             MeteorState = true;
                             for (int k = 0; k < 2; k++)
                             {
@@ -206,18 +206,19 @@ namespace Asteroido
                             }
                             MeteorState = false;
                             Score.MathScore(DrawScore.ScoreLevels.Medium);
-                        }else if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Small)
+                        }
+                        else if (Meteor.NewMeteorSize == Asteroids.MeteorSize.Small)
                         {
                             Score.MathScore(DrawScore.ScoreLevels.Low);
                         }
 
-                        
+
                         break;
                     }
 
                 }
 
-                
+
             }
             Objetos.RemoveAll(o => toRemove.Contains(o));
 
@@ -239,7 +240,7 @@ namespace Asteroido
                         PlayableCharacter.PlayerTakeDamage();
 
 
-                        if(PlayableCharacter.playerHitPoint == 0)
+                        if (PlayableCharacter.playerHitPoint == 0)
                         {
                             gameState = GameState.GameOver;
                             toRemove.Add(PlayableCharacter);
@@ -254,7 +255,7 @@ namespace Asteroido
 
         public void IsMeteorPlayerColiding(Player Player, Rectangle meteor)
         {
-            if(Player.Position.X < meteor.Position.X + meteor.Width &&
+            if (Player.Position.X < meteor.Position.X + meteor.Width &&
                Player.Position.X + Player.hitBox.Width > meteor.Position.X &&
                Player.Position.Y < meteor.Position.Y + meteor.Height &&
                Player.Position.Y + Player.hitBox.Height > meteor.Position.Y)
@@ -264,10 +265,10 @@ namespace Asteroido
         }
         public void UpdateGame()
         {
-            if(gameState == GameState.MainMenu)
-            gameState = MainMenuScreen.Show();
+            if (gameState == GameState.MainMenu)
+                gameState = MainMenuScreen.Show();
 
-            if(gameState == GameState.GameOver)
+            if (gameState == GameState.GameOver)
             {
                 MainMenuScreen.GameOver();
                 if (Raylib.IsKeyPressed(KeyboardKey.Enter))

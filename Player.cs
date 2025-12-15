@@ -6,7 +6,7 @@ namespace Asteroido
     public class Player : GameObjects
     {
 
-       
+
         int rotationSpeed = 360;
         const float radius = 32;
         const int PLAYER_SPEED = 250;
@@ -36,18 +36,18 @@ namespace Asteroido
 
         public void PlayerTakeDamage()
         {
-                
+
             if (!isInvincible)
             {
                 playerHitPoint--;
-                
+
                 isInvincible = true;
 
             }
 
-       
-                
-            
+
+
+
         }
 
         public void BlinkEffect()
@@ -57,7 +57,7 @@ namespace Asteroido
                 blinkTimer += Raylib.GetFrameTime();
                 invulnerabilityTimer -= Raylib.GetFrameTime();
 
-                if(blinkTimer <= Iframes) 
+                if (blinkTimer <= Iframes)
                     color = Color.Red;
 
                 if (blinkTimer >= Iframes)
@@ -96,7 +96,7 @@ namespace Asteroido
 
         public override void Update()
         {
-            
+
 
             BlinkEffect();
             PlayerMove(Sounds);
@@ -110,7 +110,7 @@ namespace Asteroido
             float mag = (float)Math.Sqrt(magSqr);
             Vector2 FacingDirection;
             bool playSound = false;
-            
+
 
 
             FacingDirection = GetFacingDirection();

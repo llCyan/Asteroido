@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Asteroido
+﻿namespace Asteroido
 {
     internal class DrawScore
     {
@@ -26,25 +19,25 @@ namespace Asteroido
         public void MathScore(ScoreLevels meteorSize)
         {
             score += GetScoreLevel(meteorSize);
-            
+
         }
         public int GetScoreLevel(ScoreLevels whatScore)
         {
             scoreLevels = whatScore;
             if (scoreLevels == ScoreLevels.Low)
             {
-                
+
                 return 100;
             }
             else if (scoreLevels == ScoreLevels.Medium)
             {
                 return 500;
             }
-            else if(scoreLevels == ScoreLevels.High)
+            else if (scoreLevels == ScoreLevels.High)
             {
                 return 1000;
             }
-           return 0;
+            return 0;
         }
     }
 }
