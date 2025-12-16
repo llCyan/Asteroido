@@ -35,7 +35,7 @@ namespace Asteroido
             Camera = new Camera2D();
             MainMenuScreen = new MainMenu();
             Score = new DrawScore();
-            
+
         }
 
         public void Inicializar()
@@ -318,7 +318,7 @@ namespace Asteroido
         {
 
 
-            
+
             background.Draw();
 
             if (gameState == GameState.Playing)

@@ -19,7 +19,7 @@ namespace Asteroido
             game.Inicializar();
             background = Raylib.LoadTexture(@"resource\background.png");
             game.LoadsResources();
-            
+
 
             while (!Raylib.WindowShouldClose())
             {

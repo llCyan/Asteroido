@@ -30,7 +30,6 @@ namespace Asteroido
         public float Iframes = 3.0f;
         public bool isInvincible = false;
         float blinkTimer = 0.0f;
-        float invulnerabilityTimer = 0.0f;
         public bool PlayerDmgTaken = false;
         isPlayerMoving isPlayerSpeeding;
         float frameCounter;
@@ -64,7 +63,6 @@ namespace Asteroido
             if (isInvincible)
             {
                 blinkTimer += Raylib.GetFrameTime();
-                invulnerabilityTimer -= Raylib.GetFrameTime();
 
                 if (blinkTimer <= Iframes)
                     color = Color.Red;
@@ -98,7 +96,7 @@ namespace Asteroido
         }
         public override void Draw()
         {
-            
+
             sourcePlayer = new(lado1, lado2, SpaceShipTexture.Width, SpaceShipTexture.Height);
             destPlayer = new(Position.X, Position.Y, radius * 2, radius * 2);
             origin = new(destPlayer.Width / 2, destPlayer.Height / 2);
@@ -107,7 +105,8 @@ namespace Asteroido
             if (isPlayerSpeeding == isPlayerMoving.Accelerating || isPlayerSpeeding == isPlayerMoving.MaxSpeed)
             {
                 PlayerThrusterEffect(isPlayerSpeeding);
-            }else
+            }
+            else
             {
                 PlayerThrusterEffect(isPlayerMoving.Stopped);
             }
@@ -137,7 +136,7 @@ namespace Asteroido
             Vector2 FacingDirection;
             bool playSound = false;
 
-            
+
 
             FacingDirection = GetFacingDirection();
 
@@ -146,11 +145,11 @@ namespace Asteroido
             }
             if (Raylib.IsKeyDown(KeyboardKey.W))
             {
-                
-                isPlayerSpeeding = isPlayerMoving.Accelerating;
+                isPlayerSpeeding = isPlayerMoving.MaxSpeed;
+
                 if (Raymath.Vector2Length(Speedmvn) >= PLAYER_SPEED)
                 {
-                    isPlayerSpeeding = isPlayerMoving.MaxSpeed;
+                    isPlayerSpeeding = isPlayerMoving.Accelerating;
                 }
                 Raylib.SetSoundVolume(SomMovimento, 0.3f);
                 if (Raylib.IsKeyPressed(KeyboardKey.W))
@@ -213,17 +212,17 @@ namespace Asteroido
         }
 
         const float distanceFromCenter = 34.0f;
-            Texture2D AtualThruster;
+        Texture2D AtualThruster;
         public void PlayerThrusterEffect(isPlayerMoving StatusNow)
         {
-            float backwardOffset = Rotation-270.0f;
+            float backwardOffset = Rotation - 270.0f;
             float rad = SimpleMaths.GetRad(backwardOffset);
             (double sin, double cos) = Math.SinCos(rad);
             Vector2 offset;
             offset.X = Position.X + distanceFromCenter * (float)cos;
             offset.Y = Position.Y + distanceFromCenter * (float)sin;
 
-            if( StatusNow == isPlayerMoving.Accelerating)
+            if (StatusNow == isPlayerMoving.Accelerating)
             {
                 AtualThruster = ThrusterTextureMedium;
             }
@@ -238,13 +237,13 @@ namespace Asteroido
 
             float newlado1 = currentFrame * AtualThruster.Width / 3;
             sourceThruster = new Rectangle(newlado1, 0, AtualThruster.Width / 3, AtualThruster.Height);
-            destThruster = new Rectangle(offset.X  , offset.Y , AtualThruster.Width / 3, AtualThruster.Height );
+            destThruster = new Rectangle(offset.X, offset.Y, AtualThruster.Width / 3, AtualThruster.Height);
             originThruster = new Vector2(destThruster.Width / 2, destThruster.Height / 2);
 
 
             Raylib.DrawTexturePro(AtualThruster, sourceThruster, destThruster, originThruster, Rotation - 270, color);
 
-            
+
 
         }
 
@@ -260,7 +259,7 @@ namespace Asteroido
             float rad = SimpleMaths.GetRad(Rotation);
             Vector2 pos = new(0, -1);
             return Raymath.Vector2Rotate(pos, rad);
-            
+
         }
 
 

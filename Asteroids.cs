@@ -23,7 +23,6 @@ namespace Asteroido
         Vector2 origin;
         Color color = Color.White;
         static Vector2 playerPos;
-        bool playerSound;
 
 
 
@@ -46,7 +45,6 @@ namespace Asteroido
             if (Destroyed)
             {
                 Position = Raymath.Vector2AddValue(lastPos, 20);
-                playerSound = Destroyed;
             }
         }
 
@@ -56,10 +54,7 @@ namespace Asteroido
         {
 
             CallMeteorite();
-            if (playerSound)
-            {
-                Raylib.PlaySound(meteorHit);
-            }
+
 
         }
 

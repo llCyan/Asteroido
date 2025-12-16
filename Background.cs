@@ -1,5 +1,5 @@
-﻿using System.Numerics;
-using Raylib_cs;
+﻿using Raylib_cs;
+using System.Numerics;
 
 namespace Asteroido
 {
@@ -26,7 +26,7 @@ namespace Asteroido
 
         public void InitializeStars()
         {
-            
+
             for (int i = 0; i < startCount; i++)
             {
                 RestartStars(i, Playerpos);
@@ -40,15 +40,15 @@ namespace Asteroido
                 Vector2 Playerpos2 = newPlayerPos;
                 float centerX = Playerpos2.X;
                 float centerY = Playerpos2.Y;
-                
+
                 float ParalaxFactor = 1.0f / Stars[i].Z;
 
                 float offsetX = Playerpos2.X * ParalaxFactor;
                 float offsetY = Playerpos2.Y * ParalaxFactor;
 
                 starPosition[i] = new Vector2(
-                    centerX + Stars[i].X  - offsetX,
-                    centerY + Stars[i].Y  - offsetY
+                    centerX + Stars[i].X - offsetX,
+                    centerY + Stars[i].Y - offsetY
                     );
 
                 if (starPosition[i].X < 0 || starPosition[i].X > RaylibRun.ScreenWidth ||
@@ -63,7 +63,7 @@ namespace Asteroido
 
 
             }
-            
+
         }
 
         public void RestartStars(int i, Vector2 pPos)
