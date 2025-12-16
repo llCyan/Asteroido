@@ -8,9 +8,9 @@ namespace Asteroido
         const int asteroidSpeedMin = 5;
         const int asteroidSpeedMax = 240;
         public int radius;
-        public static Texture2D asteroidLarge;
-        public static Texture2D asteroidSmall;
-        public static Texture2D asteroidMedium;
+        static Texture2D asteroidLarge;
+        static Texture2D asteroidSmall;
+        static Texture2D asteroidMedium;
         Texture2D Texture;
         public static Sound meteorHit;
         public static Sound Sounds;
@@ -65,8 +65,8 @@ namespace Asteroido
 
         public override void Update()
         {
-            speedmvn = new(Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
-            Position += speedmvn * SimpleMaths.GetFacingDirection(Rotation) * Raylib.GetFrameTime();
+            Speedmvn = new(Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax), Raylib.GetRandomValue(asteroidSpeedMin, asteroidSpeedMax));
+            Position += Speedmvn * SimpleMaths.GetFacingDirection(Rotation) * Raylib.GetFrameTime();
 
 
 
@@ -78,7 +78,7 @@ namespace Asteroido
                 if (currentFrame >= 4) currentFrame = 0;
 
             }
-            hitBox = new Rectangle(Position.X, Position.Y, Texture.Width / 4, Texture.Height);
+            HitBox = new Rectangle(Position.X, Position.Y, Texture.Width / 4, Texture.Height);
 
         }
 

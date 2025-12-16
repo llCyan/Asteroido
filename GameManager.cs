@@ -12,6 +12,7 @@ namespace Asteroido
         public List<GameObjects> Objetos { get; set; } = new List<GameObjects>();
         public Player PlayableCharacter { get; set; }
         public MainMenu MainMenuScreen;
+        public Background background;
         DrawScore Score;
         public Camera2D Camera;
         const int MaxAsteroid = 12;
@@ -34,6 +35,7 @@ namespace Asteroido
             Camera = new Camera2D();
             MainMenuScreen = new MainMenu();
             Score = new DrawScore();
+            
         }
 
         public void Inicializar()
@@ -41,8 +43,8 @@ namespace Asteroido
 
             ResetGame();
             CameraStuff();
-
-
+            background = new Background(PlayableCharacter.Position);
+            background.InitializeStars();
         }
 
         public void ResetGame()
@@ -173,7 +175,7 @@ namespace Asteroido
                 {
                     GameObjects Meteor = Objetos[j];
                     if (i == j || Meteor is not Asteroids) continue;
-                    bool colision = Raylib.CheckCollisionRecs(tiro.hitBox, Meteor.hitBox);
+                    bool colision = Raylib.CheckCollisionRecs(tiro.HitBox, Meteor.HitBox);
                     if (colision)
                     {
 
@@ -233,8 +235,8 @@ namespace Asteroido
                 if (obj is not Asteroids) continue;
                 else
                 {
-                    IsMeteorPlayerColiding(PlayableCharacter, obj.hitBox);
-                    bool colision = Raylib.CheckCollisionRecs(PlayableCharacter.hitBox, obj.hitBox);
+                    IsMeteorPlayerColiding(PlayableCharacter, obj.HitBox);
+                    bool colision = Raylib.CheckCollisionRecs(PlayableCharacter.HitBox, obj.HitBox);
                     if (colision)
                     {
                         PlayableCharacter.PlayerTakeDamage();
@@ -256,15 +258,16 @@ namespace Asteroido
         public void IsMeteorPlayerColiding(Player Player, Rectangle meteor)
         {
             if (Player.Position.X < meteor.Position.X + meteor.Width &&
-               Player.Position.X + Player.hitBox.Width > meteor.Position.X &&
+               Player.Position.X + Player.HitBox.Width > meteor.Position.X &&
                Player.Position.Y < meteor.Position.Y + meteor.Height &&
-               Player.Position.Y + Player.hitBox.Height > meteor.Position.Y)
+               Player.Position.Y + Player.HitBox.Height > meteor.Position.Y)
             {
-                Player.speedmvn *= -1;
+                Player.Speedmvn *= -1;
             }
         }
         public void UpdateGame()
         {
+            background.Update(PlayableCharacter.Position);
             if (gameState == GameState.MainMenu)
                 gameState = MainMenuScreen.Show();
 
@@ -313,6 +316,11 @@ namespace Asteroido
 
         public void DrawGame()
         {
+
+
+            
+            background.Draw();
+
             if (gameState == GameState.Playing)
             {
                 Score.Draw();

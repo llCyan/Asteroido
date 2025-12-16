@@ -6,7 +6,7 @@ namespace Asteroido
     {
         public const int ScreenWidth = 832;
         public const int ScreenHeight = 624;
-        Texture2D background;
+        public static Texture2D background;
 
         public void Execute()
         {
@@ -19,14 +19,14 @@ namespace Asteroido
             game.Inicializar();
             background = Raylib.LoadTexture(@"resource\background.png");
             game.LoadsResources();
-
+            
 
             while (!Raylib.WindowShouldClose())
             {
+                if (Raylib.IsKeyPressed(KeyboardKey.F11)) Raylib.ToggleFullscreen();
                 Raylib.BeginDrawing();
-
-                Raylib.ClearBackground(Color.Black);
                 Raylib.DrawTexture(background, 0, 0, Color.RayWhite);
+                Raylib.ClearBackground(Color.Black);
                 Raylib.DrawFPS(10, 10);
                 game.UpdateGame();
 

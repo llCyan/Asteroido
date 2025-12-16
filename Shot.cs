@@ -54,7 +54,7 @@ namespace Asteroido
                 EstaAtivo = false;
             }
             ShotUpdate();
-            hitBox = new Rectangle(Position.X, Position.Y, shotWidth, shotLenght);
+            HitBox = new Rectangle(Position.X, Position.Y, shotWidth, shotLenght);
         }
 
 

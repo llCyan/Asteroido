@@ -10,9 +10,9 @@ namespace Asteroido
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public int RotationSpeed { get; set; }
-        public Vector2 speedmvn { get; set; }
+        public Vector2 Speedmvn { get; set; }
         public bool EstaAtivo { get; set; } = false;
-        public Rectangle hitBox { get; set; }
+        public Rectangle HitBox { get; set; }
 
         public MeteorSize NewMeteorSize { get; set; }
 
