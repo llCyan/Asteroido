@@ -16,6 +16,11 @@ namespace Asteroido
         static Texture2D ThrusterTextureSmall;
         static Texture2D ThrusterTextureMedium;
         static Texture2D ThrusterTextureLarge;
+        Rectangle sourceThruster;
+        Rectangle destThruster;
+        Vector2 originThruster;
+        Rectangle sourcePlayer;
+        Rectangle destPlayer;
         public static Sound Sounds;
         public static Sound Explosion;
         Vector2 origin;
@@ -27,8 +32,9 @@ namespace Asteroido
         float blinkTimer = 0.0f;
         float invulnerabilityTimer = 0.0f;
         public bool PlayerDmgTaken = false;
-
-
+        isPlayerMoving isPlayerSpeeding;
+        float frameCounter;
+        int currentFrame;
         public Player(Vector2 Pos, float rot) : base(Pos, rot)
         {
             Speedmvn = new Vector2(0, 0);
@@ -92,18 +98,31 @@ namespace Asteroido
         }
         public override void Draw()
         {
+            
+            sourcePlayer = new(lado1, lado2, SpaceShipTexture.Width, SpaceShipTexture.Height);
+            destPlayer = new(Position.X, Position.Y, radius * 2, radius * 2);
+            origin = new(destPlayer.Width / 2, destPlayer.Height / 2);
+            Raylib.DrawTexturePro(SpaceShipTexture, sourcePlayer, destPlayer, origin, Rotation, color);
 
-            Rectangle source = new(lado1, lado2, SpaceShipTexture.Width, SpaceShipTexture.Height);
-            Rectangle dest = new(Position.X, Position.Y, radius * 2, radius * 2);
-            origin = new(dest.Width / 2, dest.Height / 2);
-            Raylib.DrawTexturePro(SpaceShipTexture, source, dest, origin, Rotation, color);
-            PlayerThrusterEffect();
-
+            if (isPlayerSpeeding == isPlayerMoving.Accelerating || isPlayerSpeeding == isPlayerMoving.MaxSpeed)
+            {
+                PlayerThrusterEffect(isPlayerSpeeding);
+            }else
+            {
+                PlayerThrusterEffect(isPlayerMoving.Stopped);
+            }
         }
-
+        const int framesSpeed = 12;
         public override void Update()
         {
+            frameCounter++;
+            if (frameCounter >= (60 / framesSpeed))
+            {
+                frameCounter = 0;
+                currentFrame++;
+                if (currentFrame >= 3) currentFrame = 0;
 
+            }
 
             BlinkEffect();
             PlayerMove(Sounds);
@@ -118,7 +137,7 @@ namespace Asteroido
             Vector2 FacingDirection;
             bool playSound = false;
 
-
+            
 
             FacingDirection = GetFacingDirection();
 
@@ -128,6 +147,11 @@ namespace Asteroido
             if (Raylib.IsKeyDown(KeyboardKey.W))
             {
                 
+                isPlayerSpeeding = isPlayerMoving.Accelerating;
+                if (Raymath.Vector2Length(Speedmvn) >= PLAYER_SPEED)
+                {
+                    isPlayerSpeeding = isPlayerMoving.MaxSpeed;
+                }
                 Raylib.SetSoundVolume(SomMovimento, 0.3f);
                 if (Raylib.IsKeyPressed(KeyboardKey.W))
                 {
@@ -145,6 +169,7 @@ namespace Asteroido
             }
             else
             {
+                isPlayerSpeeding = isPlayerMoving.Stopped;
                 if (mag > 0)
                 {
                     Vector2 direction = Raymath.Vector2Normalize(Speedmvn);
@@ -187,23 +212,48 @@ namespace Asteroido
             ChangeDirection(frame);
         }
 
-        public void PlayerThrusterEffect()
+        const float distanceFromCenter = 34.0f;
+            Texture2D AtualThruster;
+        public void PlayerThrusterEffect(isPlayerMoving StatusNow)
         {
-            float rad = SimpleMaths.GetRad(Rotation);
-            float posSquared = Raymath.Vector2LengthSqr(Position);
-            float length = (float)Math.Sqrt(posSquared);
-            (double sin, double cos) = Math.SinCos(length);
-            Vector2 offset = new Vector2((float)sin * 5, (float)cos * 5);
+            float backwardOffset = Rotation-270.0f;
+            float rad = SimpleMaths.GetRad(backwardOffset);
+            (double sin, double cos) = Math.SinCos(rad);
+            Vector2 offset;
+            offset.X = Position.X + distanceFromCenter * (float)cos;
+            offset.Y = Position.Y + distanceFromCenter * (float)sin;
 
-            float newlado1 = ThrusterTextureSmall.Width / 3;
-            Rectangle source = new Rectangle(newlado1, 0, ThrusterTextureSmall.Width / 3, ThrusterTextureSmall.Height);
-            Rectangle dest = new Rectangle(offset.X, offset.Y, ThrusterTextureSmall.Width / 3, ThrusterTextureSmall.Height );
-            Vector2 origin = new Vector2(dest.Width / 2, dest.Height / 2);
+            if( StatusNow == isPlayerMoving.Accelerating)
+            {
+                AtualThruster = ThrusterTextureMedium;
+            }
+            else if (StatusNow == isPlayerMoving.MaxSpeed)
+            {
+                AtualThruster = ThrusterTextureLarge;
+            }
+            else
+            {
+                AtualThruster = ThrusterTextureSmall;
+            }
 
-            Raylib.DrawTexturePro(ThrusterTextureSmall, source, dest, origin, -Rotation, color);
+            float newlado1 = currentFrame * AtualThruster.Width / 3;
+            sourceThruster = new Rectangle(newlado1, 0, AtualThruster.Width / 3, AtualThruster.Height);
+            destThruster = new Rectangle(offset.X  , offset.Y , AtualThruster.Width / 3, AtualThruster.Height );
+            originThruster = new Vector2(destThruster.Width / 2, destThruster.Height / 2);
 
 
-            float angle = Rotation + 180;
+            Raylib.DrawTexturePro(AtualThruster, sourceThruster, destThruster, originThruster, Rotation - 270, color);
+
+            
+
+        }
+
+        public enum isPlayerMoving
+        {
+            Stopped,
+            Accelerating,
+            MaxSpeed
+
         }
         public Vector2 GetFacingDirection()
         {

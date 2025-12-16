@@ -31,7 +31,7 @@ namespace Asteroido
         public GameManager()
         {
             posInicial = new Vector2(RaylibRun.ScreenWidth / 2, RaylibRun.ScreenHeight / 2);
-            PlayableCharacter = new Player(posInicial, 0);
+            PlayableCharacter = new Player(posInicial, 270);
             Camera = new Camera2D();
             MainMenuScreen = new MainMenu();
             Score = new DrawScore();
